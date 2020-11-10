@@ -131,10 +131,17 @@ def plot_boxes_cv2(img, boxes, savename=None, class_names=None, color=None):
             red = get_color(2, offset, classes)
             green = get_color(1, offset, classes)
             blue = get_color(0, offset, classes)
+
+            text = class_names[cls_id] + ' ' + str(cls_conf)
+
             if color is None:
                 rgb = (red, green, blue)
-            img = cv2.putText(img, class_names[cls_id], (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1.2, rgb, 1)
+            # img = cv2.putText(img, class_names[cls_id], (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1.2, rgb, 1)
+            img = cv2.putText(img, text, (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1.2, rgb, 1)
+
+        # print(f'cv2: {x1}  {y1}  {x2}  {y2}')
         img = cv2.rectangle(img, (x1, y1), (x2, y2), rgb, 1)
+
     if savename:
         print("save plot results to %s" % savename)
         cv2.imwrite(savename, img)
@@ -224,10 +231,10 @@ def post_processing(img, conf_thresh, nms_thresh, output):
 
     t3 = time.time()
 
-    print('-----------------------------------')
-    print('       max and argmax : %f' % (t2 - t1))
-    print('                  nms : %f' % (t3 - t2))
-    print('Post processing total : %f' % (t3 - t1))
-    print('-----------------------------------')
-    
+    # print('-----------------------------------')
+    # print('       max and argmax : %f' % (t2 - t1))
+    # print('                  nms : %f' % (t3 - t2))
+    # print('Post processing total : %f' % (t3 - t1))
+    # print('-----------------------------------')
+    #
     return bboxes_batch

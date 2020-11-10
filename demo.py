@@ -22,6 +22,7 @@ import argparse
 """hyper parameters"""
 use_cuda = True
 
+
 def detect_cv2(cfgfile, weightfile, imgfile):
     import cv2
     m = Darknet(cfgfile)
@@ -33,11 +34,14 @@ def detect_cv2(cfgfile, weightfile, imgfile):
     if use_cuda:
         m.cuda()
 
+
+
     num_classes = m.num_classes
     if num_classes == 20:
         namesfile = 'data/voc.names'
     elif num_classes == 80:
-        namesfile = 'data/coco.names'
+        # namesfile = 'data/coco.names'
+        namesfile = "/home/niels/workspaces/jackal-ws/src/pytorch-YOLOv4/data/coco.names"
     else:
         namesfile = 'data/x.names'
     class_names = load_class_names(namesfile)
@@ -46,14 +50,15 @@ def detect_cv2(cfgfile, weightfile, imgfile):
     sized = cv2.resize(img, (m.width, m.height))
     sized = cv2.cvtColor(sized, cv2.COLOR_BGR2RGB)
 
-    for i in range(2):
-        start = time.time()
-        boxes = do_detect(m, sized, 0.4, 0.6, use_cuda)
-        finish = time.time()
-        if i == 1:
-            print('%s: Predicted in %f seconds.' % (imgfile, (finish - start)))
+    start = time.time()
+    boxes = do_detect(m, sized, 0.4, 0.6, use_cuda)
+    finish = time.time()
+    print('Predicted in %f seconds.' % (finish - start))
 
-    plot_boxes_cv2(img, boxes[0], savename='predictions.jpg', class_names=class_names)
+    result_img = plot_boxes_cv2(img, boxes[0], savename=None, class_names=class_names)
+
+    cv2.imshow('Yolo demo', result_img)
+    cv2.waitKey(1)
 
 
 def detect_cv2_camera(cfgfile, weightfile):
@@ -67,7 +72,7 @@ def detect_cv2_camera(cfgfile, weightfile):
     if use_cuda:
         m.cuda()
 
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(2)
     # cap = cv2.VideoCapture("./test.mp4")
     cap.set(3, 1280)
     cap.set(4, 720)
@@ -77,7 +82,7 @@ def detect_cv2_camera(cfgfile, weightfile):
     if num_classes == 20:
         namesfile = 'data/voc.names'
     elif num_classes == 80:
-        namesfile = 'data/coco.names'
+        namesfile = "/home/niels/workspaces/jackal-ws/src/pytorch-YOLOv4/data/coco.names"
     else:
         namesfile = 'data/x.names'
     class_names = load_class_names(namesfile)
